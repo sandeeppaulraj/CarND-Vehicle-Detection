@@ -230,17 +230,34 @@ I should leverage GridSearchCV to obtain a better model.
 
 For this part of the project, i decided to re use the find cars routine provided in the project helper videos. For the test images provides, once scale seems enough to detetc the car. This is however, nto a viable option for the video which has several frames. I found this out by experimenting.
 
-The project videos explained the find cars function which needs to extract hog featuers only once and can be sub sampled to get all the the available overlay windows. These windows have an associated scale factor that define the overlap. To have different levels of overlap, the functio needs to be called multiple times. This is what i did for the video. My pipeline to process individual frames of the video actually calls the find cars funtions four times. 
+The project videos explained the find cars function which needs to extract hog featuers only once and can be sub sampled to get all the the available overlay windows. These windows have an associated scale factor that define the overlap. To have different levels of overlap, the function needs to be called multiple times. This is what i did for the video. My pipeline to process individual frames of the video actually calls the find cars funtions four times. Care needs to be taken at this stage since cars that are father away will tend to be smallet and so the scale needs to be dealt with appropriatley.
 
-Again based on experimentatio
+I have a minor but important tweak to the find cars implementation that was provided by udacity. 
+I have a list called window_list.
 
-#### 2. Initial Pipeline on Test Images
+Every time i correctly predict a car, i add the co-ordinates to this list. I also return the list to the calling sequence.
+
+```sh
+window_list.append(((xbox_left, ytop_draw+ystart), (xbox_left+win_draw,ytop_draw+win_draw+ystart)))
+```
+
+While finding cars, one of the inputs to the function happen to be the svc model. So it is important to have a good model. Again based on experimentation, the larger the feature vector length the better the model accuracy.
+
+#### 2 Optimizing Classifier
+
+I initially started of with RGB as the color space and even experimented with HSV as i seemed to have trouble classifying the white car. I settled for YCrCb since it gave me the best results.
+
+```sh
+hog_channel = 'ALL'
+```
+
+#### 3. Initial Pipeline on Test Images
 
 For the test images, i used one scale. I provide the details below. Once, i observed the output images, i could gauge that i had atleast a fucntional pipeline and i had correctly integrated the various components of the project.
 
 For this part of the project, the main pieces of code are as follows. I used a scale of **1.5**
 
-**PLEASE NOTE** : It became obvious when I went onto test on the videos that i needed to ahve more scales. In total i have for the video section of the project 4 different search areas with 4 scales. I explain this in the section below.
+**PLEASE NOTE** : It became obvious when I went onto test on the videos that i needed to ahve more scales. In total I have for the video section of the project 4 different search areas with 4 scales. I explain this in the section below.
 
 
 ```sh
