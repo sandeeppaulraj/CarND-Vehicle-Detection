@@ -12,6 +12,11 @@
 [image6]: ./project_images/vehicle_hog_3.jpg
 [image7]: ./project_images/vehicle_hog_4.jpg
 [image8]: ./project_images/vehicle_hog_5.jpg
+[image9]: ./project_images/non_vehicle_hog_1.jpg
+[image10]: ./project_images/non_vehicle_hog_2.jpg
+[image11]: ./project_images/non_vehicle_hog_3.jpg
+[image12]: ./project_images/non_vehicle_hog_4.jpg
+[image13]: ./project_images/non_vehicle_hog_5.jpg
 [video1]: ./output_videos/test_video.mp4
 [video2]: ./output_videos/output_video.mp4
 
@@ -120,6 +125,19 @@ for i in range(number_of_non_vehicle_images):
 
 ```
 
+![alt text][image9]
+
+
+![alt text][image10]
+
+
+![alt text][image11]
+
+
+![alt text][image12]
+
+
+![alt text][image13]
 
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
