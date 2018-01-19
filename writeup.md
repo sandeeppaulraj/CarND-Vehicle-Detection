@@ -140,11 +140,26 @@ for i in range(number_of_non_vehicle_images):
 ![alt text][image13]
 
 
-#### 2. Explain how you settled on your final choice of HOG parameters.
+#### 2. Choice of HOG parameters.
 
-I tried various combinations of parameters and...
+I tried various combinations of parameters and finally setlled for the below.
 
-#### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
+```sh
+color_space = 'YCrCb' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient = 9  # HOG orientations
+pix_per_cell = 8 # HOG pixels per cell
+cell_per_block = 2 # HOG cells per block
+hog_channel = 'ALL' # Can be 0, 1, 2, or "ALL"
+spatial_size = (16, 16) # Spatial binning dimensions
+hist_bins = 32    # Number of histogram bins
+spatial_feat = True # Spatial features on or off
+hist_feat = True # Histogram features on or off
+hog_feat = True # HOG features on or off
+```
+
+I gauged how the output images with bounding boxes looked when there were cars in the images. There were cases when i couldn't have a bounding box associated with a car. this meant that i would not be able to detect the car. I also consulted the udacity forum and YCrCb color space seemed to be able to give good results so i settled for YCrCb color space along with the above mentioned parameters.
+
+#### 3. SVM
 
 I trained a linear SVM using...
 
