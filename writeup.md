@@ -282,13 +282,13 @@ Below i provide one example where in the vicinity of the car camera there is no 
 
 ### Video Implementation
 
-#### 4. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
+#### 1. Image Pipeline
 
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
 
-Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
+I have four different scales and search areas that i selltled for after much experimentation. One of the main difficulties in this part of the project was detection of the **white car**. As this was moving away, the effective size/scale of the **car image** was changing so i had to make changes to search area and scale. the end result afetr this is not perfect but atleast detects the **white car** most of the time.
 
-I have four different scales and search areas that i selltled for after much experimentation. One of the main difficulties in this part of the project was detection of the **white car**. As this was moving away, the effective size/scale of the **car image** was changing so i had to make changes to search area and scale. the end result afetr this is not perfetc but atleast detects the **white car** most of the time.
+So after obtaining 4 window lists from the 4 difefrent calls to the find cars routine, I combine the four window lists into one list. I then add heat to each box in box list and apply a threshold of two to help remove false positives. Finally i find final boxes from heatmap using label function. Essentially each blob corresponds to a vehicle and bounding boxes are constructed to cover the area of each detected blob.
+
 
 The code to do the above is represented below.
 
@@ -354,11 +354,11 @@ for i in range(8):
 ```
 
 
-#### 1. Test images
+#### 2. Test images
 
 Apart from the 6 test images that are part of the project i also added 2 other images which have straight lines. I had used these 2 images in my previous project as well to gauge how well the intermediate steps were doing.
 
-I will depict how these 8 images give a heat map image and an output with teh resulting bounding boxes.
+I will depict how these 8 images give a heat map image and an output with the resulting bounding boxes.
 
 
 ![alt text][image1]
@@ -370,14 +370,14 @@ I will depict how these 8 images give a heat map image and an output with teh re
 ![alt text][image3]
 
 
-#### 2. Test Video
+#### 3. Test Video
 
 Here's a [link to my test video output][video1]
 
 As we can see above, both cars are successfully detected.
 
 
-#### 3. Project Video
+#### 4. Project Video
 
 Here's a [link to my project video output][video2]
 
