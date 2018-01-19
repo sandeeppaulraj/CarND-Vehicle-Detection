@@ -11,8 +11,8 @@
 [image5]: ./examples/bboxes_and_heat.png
 [image6]: ./examples/labels_map.png
 [image7]: ./examples/output_bboxes.png
-[video1]: ./project_video.mp4
-
+[video1]: ./test_video.mp4
+[video2]: ./output_video.mp4
 
 ---
 ### Introduction
@@ -61,9 +61,16 @@ Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spat
 
 ### Video Implementation
 
-#### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video.mp4)
+#### 1. Test Video
 
+Here's a [link to my test video output][video1]
+
+As we can se above, both cars are successfully detected.
+
+
+#### 1. Project Video
+
+Here's a [link to my project video output][video2]
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
