@@ -237,54 +237,58 @@ For this part of the project, i decided to re use the find cars routine provided
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+For the test images, i used one scale. I provide the details below. Once, i observed the output images, i could gauge that i had atleast a fucntional pipeline and i had correctly integrated the various components of the project.
+
+For this part of the project, the main pieces of code are as follows. I used a scale of **1.5**
+
+**PLEASE NOTE** : It became obvious when I went onto test on the videos that i needed to ahve more scales. In total i have for the video section of the project 4 different search areas with 4 scales. I explain this in the section below.
+
+
+```sh
+
+ystart1 = 400
+ystop1 = 650
+scale1 = 1.5
+
+for i in range(8):
+    out_img, window_list1 = find_cars(test_images[i], ystart1, ystop1, scale1, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
+
+    
+    #Plot the result
+    f, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 9))
+    f.tight_layout()
+    ax1.imshow(test_images[i])
+    ax1.set_title('Original Image', fontsize=20)
+    ax2.imshow(out_img, cmap='gray')
+    ax2.set_title('Hog Sub Sampled Image.', fontsize=20)
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+
+```
 
 
 ![alt text][image14]
 
+
+Below i provide one example where in the vicinity of the car camera there is no car and hence no bouding boxes.
 
 ![alt text][image15]
 
 
 ![alt text][image16]
 
+
 ---
 
 ### Video Implementation
-
-#### 1. Test images
-
-Apart from the 6 test images that are part of the project i also added 2 other images which have straight lines. I had used these 2 images in my previous project as well to gauge how well the intermediate steps were doing.
-
-I will depict how these 8 images give a heat map image and an output with teh resulting bounding boxes.
-
-
-![alt text][image1]
-
-
-![alt text][image2]
-
-
-![alt text][image3]
-
-
-#### 2. Test Video
-
-Here's a [link to my test video output][video1]
-
-As we can se above, both cars are successfully detected.
-
-
-#### 3. Project Video
-
-Here's a [link to my project video output][video2]
-
 
 #### 4. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
 I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
+
+I have four different scales and search areas that i selltled for after much experimentation. One of the main difficulties in this part of the project was detection of the **white car**. As this was moving away, the effective size/scale of the **car image** was changing so i had to make changes to search area and scale. the end result afetr this is not perfetc but atleast detects the **white car** most of the time.
 
 The code to do the above is represented below.
 
@@ -348,6 +352,36 @@ for i in range(8):
     plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
     plt.show()
 ```
+
+
+#### 1. Test images
+
+Apart from the 6 test images that are part of the project i also added 2 other images which have straight lines. I had used these 2 images in my previous project as well to gauge how well the intermediate steps were doing.
+
+I will depict how these 8 images give a heat map image and an output with teh resulting bounding boxes.
+
+
+![alt text][image1]
+
+
+![alt text][image2]
+
+
+![alt text][image3]
+
+
+#### 2. Test Video
+
+Here's a [link to my test video output][video1]
+
+As we can see above, both cars are successfully detected.
+
+
+#### 3. Project Video
+
+Here's a [link to my project video output][video2]
+
+In the last frame both balck cars in the vicinity are detected.
 
 ---
 
