@@ -228,7 +228,7 @@ I should leverage GridSearchCV to obtain a better model.
 
 #### 1. Finding Cars
 
-For this part of the project, i decided to re use the find cars routine provided in the project helper videos. For the test images provides, once scale seems enough to detetc the car. This is however, nto a viable option for the video which has several frames. I found this out by experimenting.
+For this part of the project, i decided to re use the find cars routine provided in the project helper videos. For the test images provides, once scale seems enough to detetc the car. This is however, not a viable option for the video which has several frames. I found this out by experimenting.
 
 The project videos explained the find cars function which needs to extract hog featuers only once and can be sub sampled to get all the the available overlay windows. These windows have an associated scale factor that define the overlap. To have different levels of overlap, the function needs to be called multiple times. This is what i did for the video. My pipeline to process individual frames of the video actually calls the find cars funtions four times. Care needs to be taken at this stage since cars that are father away will tend to be smallet and so the scale needs to be dealt with appropriatley.
 
@@ -250,6 +250,8 @@ I initially started of with RGB as the color space and even experimented with HS
 ```sh
 hog_channel = 'ALL'
 ```
+
+I also make the above selection for the hog channel since i don't want to loose any features and this also increases my feature vector length.
 
 #### 3. Initial Pipeline on Test Images
 
@@ -286,7 +288,7 @@ for i in range(8):
 ![alt text][image14]
 
 
-Below i provide one example where in the vicinity of the car camera there is no car and hence no bouding boxes.
+Below i provide one example where in the vicinity of the car camera there is no car and hence no bounding boxes.
 
 ![alt text][image15]
 
@@ -301,9 +303,9 @@ Below i provide one example where in the vicinity of the car camera there is no 
 #### 1. Image Pipeline
 
 
-I have four different scales and search areas that i selltled for after much experimentation. One of the main difficulties in this part of the project was detection of the **white car**. As this was moving away, the effective size/scale of the **car image** was changing so i had to make changes to search area and scale. the end result afetr this is not perfect but atleast detects the **white car** most of the time.
+I have four different scales and search areas that i selltled for after much experimentation. One of the main difficulties in this part of the project was detection of the **white car**. As this was moving away, the effective size/scale of the **car image** was changing so i had to make changes to search area and scale. The end result after this is not perfect but atleast detects the **white car** most of the time.
 
-So after obtaining 4 window lists from the 4 difefrent calls to the find cars routine, I combine the four window lists into one list. I then add heat to each box in box list and apply a threshold of two to help remove false positives. Finally i find final boxes from heatmap using label function. Essentially each blob corresponds to a vehicle and bounding boxes are constructed to cover the area of each detected blob.
+So after obtaining 4 window lists from the 4 different calls to the find cars routine, I combine the four window lists into one list. I then add heat to each box in box list and apply a threshold of two to help remove false positives. Finally i find final boxes from heatmap using label function. Essentially each blob corresponds to a vehicle and bounding boxes are constructed to cover the area of each detected blob.
 
 
 The code to do the above is represented below.
@@ -397,18 +399,18 @@ As we can see above, both cars are successfully detected.
 
 Here's a [link to my project video output][video2]
 
-In the last frame both balck cars in the vicinity are detected.
+In the last frame both black cars in the vicinity are detected.
 
 ---
 
 ### Discussion
 
 
-- The biggest issue that i faced was since i was calling the Hog Sub Sampling Window Search with 4 different scales/points, the turn around time to get the actual output video even from an Amazon EC2 GPU instance was around 43 minutes. This caused minor updates to take a long time to produce tangible results. Outputs from the test video were usually fine, but were not always reflective of the laeger project video.
+- The biggest issue that i faced was since i was calling the Hog Sub Sampling Window Search with 4 different scales/points, the turn around time to get the actual output video even from an Amazon EC2 GPU instance was around 43 minutes. This caused even minor updates to take a long time to produce tangible results. Outputs from the test video were usually fine, but were not always reflective of the larger project video.
 
 - I need to use Grid Search CV in my project to get a better model.
 
-- I shoudl also try other models such as Decision Tree Classifier.
+- I should also try other models such as Decision Tree Classifier.
 
 - I notice that in the project video, oncoming traffic sometimes gets detected as well.  This can be avoided by not doing a sliding window search across the entire width of the image. We should use a combination of finding appropriate lanes to search for **vehicles of interest**.  On the other hand, a road without a divider, we even need to be cognizant of the oncoming traffic as well.
 
