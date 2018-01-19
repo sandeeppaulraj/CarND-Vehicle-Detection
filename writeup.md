@@ -7,10 +7,11 @@
 [image1]: ./project_images/combo3in1_a.jpg
 [image2]: ./project_images/combo3in1_b.jpg
 [image3]: ./project_images/combo3in1_b.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
+[image4]: ./project_images/vehicle_hog_1.jpg
+[image5]: ./project_images/vehicle_hog_2.jpg
+[image6]: ./project_images/vehicle_hog_3.jpg
+[image7]: ./project_images/vehicle_hog_4.jpg
+[image8]: ./project_images/vehicle_hog_5.jpg
 [video1]: ./output_videos/test_video.mp4
 [video2]: ./output_videos/output_video.mp4
 
@@ -29,18 +30,97 @@ P5_vehicle_detection.ipynb
 
 #### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
-The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
+The first step of the project is to read in the various images for the vehicles and non vehicles.
 
-I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
+For this i have a function that i essentially call twice; once to obtain vehicles and the second time to obtain non vehicles.
 
-![alt text][image1]
+```sh
+def get_images(path):
+    images = []
+    for dirs, subdir, files in os.walk(path):
+        print(dirs, subdir)
+        for file in files:
+            if '.DS_Store' not in file:
+                images.append(os.path.join(dirs, file))
+                
+    return list(map(lambda img: mpimg.imread(img), images))
+```
 
-I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
+To obtain vehicles I have the following snippet.
 
-Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+```sh
+vehicle_path = '../vehicles'
+vehicles = get_images(vehicle_path)
+print(len(vehicles))
+```
+
+To obtain non vehicles I have the following snippet.
 
 
-![alt text][image2]
+```sh
+non_vehicle_path = '../non-vehicles'
+non_vehicles = get_images(non_vehicle_path)
+print(len(non_vehicles))
+```
+
+I then output 5 random car images along with their associated HOG images.
+
+The images can be seen below after the code snippet.
+
+```sh
+for i in range(number_of_vehicle_images):
+    index = random.randint(0, len(vehicles))
+    image = vehicles[index]
+
+    features, hog_image = get_hog_features(image[:,:,0], 9, 8, 2, True, True)
+
+    f, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 9))
+    f.tight_layout()
+    ax1.imshow(image)
+    ax1.set_title('Original Image', fontsize=20)
+    ax2.imshow(hog_image, cmap='gray')
+    ax2.set_title('Hog Image.', fontsize=20)
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+```
+
+![alt text][image4]
+
+
+![alt text][image5]
+
+
+![alt text][image6]
+
+
+![alt text][image7]
+
+
+![alt text][image8]
+
+
+
+I then output 5 random non car images along with their associated HOG images
+
+```sh
+for i in range(number_of_non_vehicle_images):
+    index = random.randint(0, len(non_vehicles))
+    image = non_vehicles[index]
+
+    features, hog_image = get_hog_features(image[:,:,0], 9, 8, 2, True, True)
+
+    f, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 9))
+    f.tight_layout()
+    ax1.imshow(image)
+    ax1.set_title('Original Image', fontsize=20)
+    ax2.imshow(hog_image, cmap='gray')
+    ax2.set_title('Hog Image.', fontsize=20)
+    plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
+    plt.show()
+
+```
+
+
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
@@ -50,19 +130,21 @@ I tried various combinations of parameters and...
 
 I trained a linear SVM using...
 
+
+
 ### Sliding Window Search
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
 I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
 
-![alt text][image3]
+
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
 
-![alt text][image4]
+
 ---
 
 ### Video Implementation
