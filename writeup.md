@@ -228,12 +228,11 @@ I should leverage GridSearchCV to obtain a better model.
 
 #### 1. Finding Cars
 
-For this part of the project, i decided to re use the find cars routine provided in the project helper videos.
+For this part of the project, i decided to re use the find cars routine provided in the project helper videos. For the test images provides, once scale seems enough to detetc the car. This is however, nto a viable option for the video which has several frames. I found this out by experimenting.
 
+The project videos explained the find cars function which needs to extract hog featuers only once and can be sub sampled to get all the the available overlay windows. These windows have an associated scale factor that define the overlap. To have different levels of overlap, the functio needs to be called multiple times. This is what i did for the video. My pipeline to process individual frames of the video actually calls the find cars funtions four times. 
 
-
-
-
+Again based on experimentatio
 
 #### 2. Initial Pipeline on Test Images
 
