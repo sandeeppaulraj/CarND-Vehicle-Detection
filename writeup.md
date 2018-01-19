@@ -36,7 +36,7 @@ P5_vehicle_detection.ipynb
 
 ### Histogram of Oriented Gradients (HOG)
 
-#### 1. Explain how (and identify where in your code) you extracted HOG features from the training images.
+#### 1. Extraction of HOG features.
 
 The first step of the project is to read in the various images for the vehicles and non vehicles.
 
@@ -226,7 +226,7 @@ I should leverage GridSearchCV to obtain a better model.
 
 ### Sliding Window Search
 
-#### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
+#### 1. Finding Cars
 
 For this part of the project, i decided to re use the find cars routine provided in the project helper videos.
 
@@ -235,7 +235,7 @@ For this part of the project, i decided to re use the find cars routine provided
 
 
 
-#### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+#### 2. Initial Pipeline on Test Images
 
 For the test images, i used one scale. I provide the details below. Once, i observed the output images, i could gauge that i had atleast a fucntional pipeline and i had correctly integrated the various components of the project.
 
