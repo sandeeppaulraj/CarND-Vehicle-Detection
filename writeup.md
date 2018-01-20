@@ -167,7 +167,7 @@ I gauged how the output images with bounding boxes looked when there were cars i
 We essentially have a classification problem here since we have to choose between **car** and **not car**. This is NOT a regression problem. Since we have a binary classification problem, a decision tree might also be able to produce good results. However, i have not tried this in my project. I intend to try this at a later date.
 
 The code for the SVM is as below. I have re used the code from the project helper videos.
-As can be seen below after defining the label vecot i split the data with a ratio of 0.2.
+As can be seen below after defining the label vecor i split the data with a ratio of 0.2.
 I use a linear SVC and then fit the model and finally make some predictions.
 
 ```sh
@@ -228,9 +228,9 @@ I should leverage GridSearchCV to obtain a better model.
 
 #### 1. Finding Cars
 
-For this part of the project, i decided to re use the find cars routine provided in the project helper videos. For the test images provides, once scale seems enough to detetc the car. This is however, not a viable option for the video which has several frames. I found this out by experimenting.
+For this part of the project, i decided to re use the find cars routine provided in the project helper videos. For the test images provides, once scale seems enough to detect the car. This is however, not a viable option for the video which has several frames. I found this out by experimenting.
 
-The project videos explained the find cars function which needs to extract hog featuers only once and can be sub sampled to get all the the available overlay windows. These windows have an associated scale factor that define the overlap. To have different levels of overlap, the function needs to be called multiple times. This is what i did for the video. My pipeline to process individual frames of the video actually calls the find cars funtions four times. Care needs to be taken at this stage since cars that are father away will tend to be smallet and so the scale needs to be dealt with appropriatley.
+The project videos explained the find cars function which needs to extract hog features only once and can be sub sampled to get all the the available overlay windows. These windows have an associated scale factor that define the overlap. To have different levels of overlap, the function needs to be called multiple times. This is what i did for the video. My pipeline to process individual frames of the video actually calls the find cars funtions four times. Care needs to be taken at this stage since cars that are father away will tend to be smallet and so the scale needs to be dealt with appropriatley.
 
 I have a minor but important tweak to the find cars implementation that was provided by udacity. 
 I have a list called window_list.
@@ -303,7 +303,7 @@ Below i provide one example where in the vicinity of the car camera there is no 
 #### 1. Image Pipeline
 
 
-I have four different scales and search areas that i selltled for after much experimentation. One of the main difficulties in this part of the project was detection of the **white car**. As this was moving away, the effective size/scale of the **car image** was changing so i had to make changes to search area and scale. The end result after this is not perfect but atleast detects the **white car** most of the time.
+I have four different scales and search areas that i settled for after much experimentation. One of the main difficulties in this part of the project was detection of the **white car**. As this was moving away, the effective size/scale of the **car image** was changing so i had to make changes to search area and scale. The end result after this is not perfect but atleast detects the **white car** most of the time.
 
 So after obtaining 4 window lists from the 4 different calls to the find cars routine, I combine the four window lists into one list. I then add heat to each box in box list and apply a threshold of two to help remove false positives. Finally i find final boxes from heatmap using label function. Essentially each blob corresponds to a vehicle and bounding boxes are constructed to cover the area of each detected blob.
 
