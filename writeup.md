@@ -261,7 +261,7 @@ For the test images, i used one scale. I provide the details below. Once, i obse
 
 For this part of the project, the main pieces of code are as follows. I used a scale of **1.5**
 
-**PLEASE NOTE** : It became obvious when I went onto test on the videos that i needed to have more scales. In total I have for the video section of the project 3 different search areas with 3 scales. I explain this in the section below.
+**PLEASE NOTE** : It became obvious when I went onto test on the videos that i needed to have more scales. In total I have for the video section of the project 4 different search areas with 4 scales. I explain this in the section below.
 
 
 ```sh
@@ -304,7 +304,7 @@ for i in range(8):
 
 I have four different scales and search areas that i settled for after much experimentation. One of the main difficulties in this part of the project was detection of the **white car**. As this was moving away, the effective size/scale of the **car image** was changing so i had to make changes to search area and scale. The end result after this is not perfect but atleast detects the **white car** most of the time.
 
-So after obtaining 3 window lists from the 3 different calls to the find cars routine, I combine the three window lists into one list. I then add heat to each box in box list and apply a threshold of **two** and also **five** to help remove false positives. Finally i find final boxes from heatmap using label function. Essentially each blob corresponds to a vehicle and bounding boxes are constructed to cover the area of each detected blob. I have two separate outputs to gauge the difference when i add a threshold of **two** and **five**. I settled to use a threhold of five for the video pipeline since the output test images seem better with a threhold of five.
+So after obtaining 4 window lists from the 4 different calls to the find cars routine, I combine the four window lists into one list. I then add heat to each box in box list and apply a threshold of **two** and also **five** to help remove false positives. Finally i find final boxes from heatmap using label function. Essentially each blob corresponds to a vehicle and bounding boxes are constructed to cover the area of each detected blob. I have two separate outputs to gauge the difference when i add a threshold of **two** and **five**. I settled to use a threhold of five for the video pipeline since the output test images seem better with a threhold of five.
 
 
 The code to do the above is represented below.
@@ -312,6 +312,7 @@ The code to do the above is represented below.
 ```sh
 xstart = 640
 xstop = 1280
+xstop1 = 960
 
 ystart1 = 400
 ystop1 = 656
@@ -325,6 +326,10 @@ ystart3 = 336
 ystop3 = 528
 scale3 = 1.9
 
+ystart4 = 464
+ystop4 = 592
+scale4 = 2.3
+
 for i in range(6):
     heat = np.zeros_like(test_images[i][:,:,0]).astype(np.float)
     out_img, window_list1 = find_cars(test_images[i], ystart1, ystop1, xstart, xstop, scale1, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
@@ -333,7 +338,9 @@ for i in range(6):
     
     out_img, window_list3 = find_cars(test_images[i], ystart3, ystop3, xstart, xstop, scale3, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
     
-    window_list = window_list1 + window_list2 + window_list3
+    out_img, window_list4 = find_cars(test_images[i], ystart4, ystop4, xstart, xstop1, scale4, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
+    
+    window_list = window_list1 + window_list2 + window_list3 + window_list4
     
     #Add heat to each box in box list
     heat = add_heat(heat, window_list)
