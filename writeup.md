@@ -149,15 +149,17 @@ I tried various combinations of parameters and finally settled for the below.
 
 ```sh
 color_space = 'YCrCb' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
-orient = 9  # HOG orientations
+orient = 8  # HOG orientations
 pix_per_cell = 8 # HOG pixels per cell
 cell_per_block = 2 # HOG cells per block
 hog_channel = 'ALL' # Can be 0, 1, 2, or "ALL"
+spatial = 16
 spatial_size = (16, 16) # Spatial binning dimensions
 hist_bins = 32    # Number of histogram bins
 spatial_feat = True # Spatial features on or off
 hist_feat = True # Histogram features on or off
 hog_feat = True # HOG features on or off
+y_start_stop = [None, None] # Min and max in y to search in slide_window()
 ```
 
 I gauged how the output images with bounding boxes looked when there were cars in the images. There were cases when i couldn't have a bounding box associated with a car. This meant that i would not be able to detect the car. I also consulted the udacity forum and YCrCb color space seemed to be able to give good results so i settled for YCrCb color space along with the above mentioned parameters.
@@ -209,15 +211,15 @@ print(round(t2-t, 5), 'Seconds to predict', n_predict,'labels with SVC')
 
 ```sh
 Using spatial binning of size 16 and 32 histogram bins
-Using: 9 orientations 8 pixels per cell and 2 cells per block
-Feature vector length: 6156
-24.21 Seconds to train SVC...
-Test Accuracy of SVC =  0.9899
-My SVC predicts:  [ 1.  0.  1.  1.  1.  1.  0.  0.  0.  0.  1.  0.  0.  0.  0.  1.  0.  1.
-  0.  1.]
-For these 20 labels:  [ 1.  0.  1.  1.  1.  1.  0.  0.  0.  0.  1.  1.  0.  0.  0.  1.  0.  1.
-  0.  1.]
-0.00486 Seconds to predict 20 labels with SVC
+Using: 8 orientations 8 pixels per cell and 2 cells per block
+Feature vector length: 5568
+16.64 Seconds to train SVC...
+Test Accuracy of SVC =  0.9863
+My SVC predicts:  [ 0.  1.  1.  1.  1.  1.  0.  0.  1.  0.  0.  0.  1.  0.  0.  1.  1.  0.
+  1.  0.]
+For these 20 labels:  [ 0.  1.  1.  1.  1.  1.  0.  0.  1.  0.  0.  0.  1.  0.  0.  1.  1.  0.
+  1.  0.]
+0.00397 Seconds to predict 20 labels with SVC
 
 ```
 
@@ -259,19 +261,18 @@ For the test images, i used one scale. I provide the details below. Once, i obse
 
 For this part of the project, the main pieces of code are as follows. I used a scale of **1.5**
 
-**PLEASE NOTE** : It became obvious when I went onto test on the videos that i needed to ahve more scales. In total I have for the video section of the project 4 different search areas with 4 scales. I explain this in the section below.
+**PLEASE NOTE** : It became obvious when I went onto test on the videos that i needed to have more scales. In total I have for the video section of the project 3 different search areas with 3 scales. I explain this in the section below.
 
 
 ```sh
 
-ystart1 = 400
-ystop1 = 650
+ystart1 = 336
+ystop1 = 656
 scale1 = 1.5
 
 for i in range(8):
-    out_img, window_list1 = find_cars(test_images[i], ystart1, ystop1, scale1, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
+    out_img, window_list1 = find_cars(test_images[i], 336, 656, 640, 1280, scale1, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
 
-    
     #Plot the result
     f, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 9))
     f.tight_layout()
@@ -303,7 +304,7 @@ for i in range(8):
 
 I have four different scales and search areas that i settled for after much experimentation. One of the main difficulties in this part of the project was detection of the **white car**. As this was moving away, the effective size/scale of the **car image** was changing so i had to make changes to search area and scale. The end result after this is not perfect but atleast detects the **white car** most of the time.
 
-So after obtaining 4 window lists from the 4 different calls to the find cars routine, I combine the four window lists into one list. I then add heat to each box in box list and apply a threshold of two to help remove false positives. Finally i find final boxes from heatmap using label function. Essentially each blob corresponds to a vehicle and bounding boxes are constructed to cover the area of each detected blob.
+So after obtaining 3 window lists from the 3 different calls to the find cars routine, I combine the three window lists into one list. I then add heat to each box in box list and apply a threshold of **two** and also **five** to help remove false positives. Finally i find final boxes from heatmap using label function. Essentially each blob corresponds to a vehicle and bounding boxes are constructed to cover the area of each detected blob. I have two separate outputs to gauge the difference when i add a threshold of **two** and **five**. I settled to use a threhold of five for the video pipeline since the output test images seem better with a threhold of five.
 
 
 The code to do the above is represented below.
@@ -405,13 +406,11 @@ In the last frame both black cars in the vicinity are detected.
 ### Discussion
 
 
-- The biggest issue that i faced was since i was calling the Hog Sub Sampling Window Search with 4 different scales/points, the turn around time to get the actual output video even from an Amazon EC2 GPU instance was around 43 minutes. This caused even minor updates to take a long time to produce tangible results. Outputs from the test video were usually fine, but were not always reflective of the larger project video.
+- The biggest issue that i faced was since i was calling the Hog Sub Sampling Window Search with 4 different scales/points, the turn around time to get the actual output video even from an Amazon EC2 GPU instance was around 30 minutes. This caused even minor updates to take a long time to produce tangible results. Outputs from the test video were usually fine, but were not always reflective of the larger project video.
 
 - I need to use Grid Search CV in my project to get a better model.
 
 - I should also try other models such as Decision Tree Classifier.
-
-- I notice that in the project video, oncoming traffic sometimes gets detected as well.  This can be avoided by not doing a sliding window search across the entire width of the image. We should use a combination of finding appropriate lanes to search for **vehicles of interest**.  On the other hand, a road without a divider, we even need to be cognizant of the oncoming traffic as well.
 
 - I notice that the windows are wobbly, a better sliding window search with either better or more scales will make the Pipeline more robust.
 
