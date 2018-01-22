@@ -288,8 +288,6 @@ for i in range(8):
 ![alt text][image14]
 
 
-Below i provide one example where in the vicinity of the car camera there is no car and hence no bounding boxes.
-
 ![alt text][image15]
 
 
@@ -311,39 +309,30 @@ So after obtaining 4 window lists from the 4 different calls to the find cars ro
 The code to do the above is represented below.
 
 ```sh
-from scipy.ndimage.measurements import label
+xstart = 640
+xstop = 1280
 
-ystart1 = 380
-ystop1 = 686
-scale1 = 1.2
+ystart1 = 400
+ystop1 = 656
+scale1 = 1.4
 
-ystart2 = 350
-ystop2 = 650
-scale2 = 1.5
+ystart2 = 400
+ystop2 = 592
+scale2 = 1.6
 
-ystart3 = 350
-ystop3 = 590
-scale3 = 1.7
+ystart3 = 336
+ystop3 = 528
+scale3 = 1.9
 
-ystart4 = 370
-ystop4 = 490
-scale4 = 2
-
-for i in range(8):
+for i in range(6):
     heat = np.zeros_like(test_images[i][:,:,0]).astype(np.float)
-    out_img, window_list1 = find_cars(test_images[i], ystart1, ystop1, scale1, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
+    out_img, window_list1 = find_cars(test_images[i], ystart1, ystop1, xstart, xstop, scale1, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
 
-    out_img, window_list2 = find_cars(test_images[i], ystart2, ystop2, scale2, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
+    out_img, window_list2 = find_cars(test_images[i], ystart2, ystop2, xstart, xstop, scale2, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
     
-    out_img, window_list3 = find_cars(test_images[i], ystart3, ystop3, scale3, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
+    out_img, window_list3 = find_cars(test_images[i], ystart3, ystop3, xstart, xstop, scale3, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
     
-    out_img, window_list4 = find_cars(test_images[i], ystart4, ystop4, scale4, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
-    
-    #print(window_list)
-    
-    window_list = window_list1 + window_list2 + window_list3 + window_list4
-    #window_list = window_list1
-    #window_list = window_list1 + window_list2 
+    window_list = window_list1 + window_list2 + window_list3
     
     #Add heat to each box in box list
     heat = add_heat(heat, window_list)
@@ -358,15 +347,27 @@ for i in range(8):
     labels = label(heatmap)
     draw_img = draw_labeled_bboxes(np.copy(test_images[i]), labels)
     
+    #Apply threshold to help remove false positives
+    heat = apply_threshold(heat, 5)
+    
+    #Visualize the heatmap when displaying
+    heatmap = np.clip(heat, 0, 255)
+    
+    #Find final boxes from heatmap using label function
+    labels = label(heatmap)
+    draw_img1 = draw_labeled_bboxes(np.copy(test_images[i]), labels)
+    
     #Plot the result
-    f, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(12, 9))
+    f, (ax1, ax2, ax3, ax4) = plt.subplots(1, 4, figsize=(15, 9))
     f.tight_layout()
     ax1.imshow(test_images[i])
-    ax1.set_title('Original Image', fontsize=15)
+    ax1.set_title('Original Image', fontsize=12)
     ax2.imshow(labels[0], cmap='hot')
-    ax2.set_title('Heat Map Image.', fontsize=15)
+    ax2.set_title('Heat Map Image.', fontsize=12)
     ax3.imshow(draw_img, cmap='gray')
-    ax3.set_title('Image with Car Positions', fontsize=15)
+    ax3.set_title('Image with Heat Thresh 2', fontsize=12)
+    ax4.imshow(draw_img1, cmap='gray')
+    ax4.set_title('Image with Heat Thresh 5', fontsize=12)
     plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
     plt.show()
 ```
@@ -374,9 +375,9 @@ for i in range(8):
 
 #### 2. Test images
 
-Apart from the 6 test images that are part of the project i also added 2 other images which have straight lines. I had used these 2 images in my previous project as well to gauge how well the intermediate steps were doing.
+I am testing using the 6 test images that have been provided.
 
-I will depict how these 8 images give a heat map image and an output with the resulting bounding boxes.
+Below, i depict 2 separate images with a heat threshold of 2 and 5. We can see that a threshold of 5 gives a slightly better output so i am going to continue using that in my project.
 
 
 ![alt text][image1]
@@ -384,8 +385,6 @@ I will depict how these 8 images give a heat map image and an output with the re
 
 ![alt text][image2]
 
-
-![alt text][image3]
 
 
 #### 3. Test Video
